@@ -47,6 +47,9 @@ class DocumentProcessor:
             # Allow only type `pdf`
             # Allow multiple PDFs for ingestion
             #####################################
+            "Upload PDF files",
+            type='pdf',
+            accept_multiple_files=True
         )
         
         if uploaded_files is not None:
@@ -66,15 +69,20 @@ class DocumentProcessor:
                 # Use PyPDFLoader here to load the PDF and extract pages.
                 # https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf#using-pypdf
                 # You will need to figure out how to use PyPDFLoader to process the temporary file.
+                loader = PyPDFLoader(temp_file_path)
+                document = loader.load()
                 
                 # Step 3: Then, Add the extracted pages to the 'pages' list.
                 #####################################
+                self.pages.extend(document)
                 
                 # Clean up by deleting the temporary file.
                 os.unlink(temp_file_path)
             
             # Display the total number of pages processed.
             st.write(f"Total pages processed: {len(self.pages)}")
+
+            # Step 4: Test the file using streamlit run to ensure documents can be ingested and processed for PDFs
         
 if __name__ == "__main__":
     processor = DocumentProcessor()
